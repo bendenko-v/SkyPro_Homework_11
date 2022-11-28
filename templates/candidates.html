@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <h2>Все кандидаты:</h2>
+        {% for candidate in candidates %}
+            <p><a href="{{ url_for('candidate', pk=candidate.id) }}">{{ candidate.name }}</a></p>
+        {% endfor %}
+        <form action="{{ url_for('search_by_name') }}" method="POST">
+            <input type="text" name="name" value="Search by name" onfocus="this.value=''">
+            <input class="button" type="submit" value="Search">
+        </form>
+        <form action="{{ url_for('search_by_skill') }}" method="POST">
+            <input type="text" name="skill" value="Search by skill" onfocus="this.value=''">
+            <input class="button" type="submit" value="Search">
+        </form>
+    </div>
+    {% if person %}
+        <div class="container next">
+            <h3>{{ person.name }}</h3>
+            <p>{{ person.position }}</p>
+            <img src="{{ person.picture }}" width="200" alt="{{ person.name }}">
+            <p>Навыки кандидата:</p>
+            <ul>
+                {% for skill in skills %}
+                    <li>{{ skill }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% elif name %}
+        <div class="container next">
+            <h3>Найдено кандидатов с "{{ name }}": {{ found_by_name|length }}</h3>
+            {% for candidate in found_by_name %}
+                <p><a href="{{ url_for('candidate', pk=candidate.id) }}">{{ candidate.name }}</a></p>
+            {% endfor %}
+        </div>
+    {% elif skill %}
+        <div class="container next">
+            <h3>Найдено кандидатов с навыком "{{ skill }}": {{ found_by_skill|length }}</h3>
+            {% for candidate in found_by_skill %}
+                <p><a href="{{ url_for('candidate', pk=candidate.id) }}">{{ candidate.name }}</a></p>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
